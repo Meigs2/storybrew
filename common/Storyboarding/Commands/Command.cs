@@ -1,4 +1,4 @@
-﻿using StorybrewCommon.Animations;
+using StorybrewCommon.Animations;
 using StorybrewCommon.Storyboarding.CommandValues;
 using System.IO;
 
@@ -43,6 +43,7 @@ namespace StorybrewCommon.Storyboarding.Commands
         }
 
         public abstract TValue ValueAtProgress(double progress);
+
         public abstract TValue Midpoint(Command<TValue> endCommand, double progress);
 
         public virtual string ToOsbString(ExportSettings exportSettings)
@@ -66,6 +67,21 @@ namespace StorybrewCommon.Storyboarding.Commands
                 result += "," + endValueString;
 
             return result;
+        }
+
+        public virtual string[] ToOsbStringArray(ExportSettings exportSettings)
+        {
+            var startTimeString = ((int)StartTime).ToString(exportSettings.NumberFormat);
+            var endTimeString = ((int)EndTime).ToString(exportSettings.NumberFormat);
+            var startValueString = StartValue.ToOsbString(exportSettings);
+            var endValueString = EndValue.ToOsbString(exportSettings);
+
+            string[] paramaters =
+            {
+                Identifier, ((int)Easing).ToString(exportSettings.NumberFormat),
+                startTimeString, endTimeString, startValueString, endValueString
+            };
+            return paramaters;
         }
 
         public virtual void WriteOsb(TextWriter writer, ExportSettings exportSettings, int indentation)
